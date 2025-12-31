@@ -1,0 +1,22 @@
+body {
+	font-family: system-ui, sans-serif;
+	background: #3eccf3;
+	color: white;
+	padding: 40px;
+	font-size: 20px;
+}
+
+h1 {
+	font-size: 36px;
+}
+
+a {
+	color: #2563eb;
+	font-weight: 600;
+}
+
+.highlight {
+	background-color: #f15; 
+	color: white;             
+	padding: 2px 5px;        
+}
