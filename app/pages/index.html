@@ -5,20 +5,35 @@
 	<head>
 		<title>My first Website</title>
 		<link rel="stylesheet" href="style.css">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
 	<head>
 
 	<body>
+
+		<p>
+      		<label for="picture">Take a picture using back facing camera:</label>
+      		<input id="photo_input" type="file" accept="image/*" capture="environment">
+      		<img id="thumbnail" width="200">
+		</p>
+
 		<h1><span class="highlight">Hello from my website</span></h1>
+
 		<p>This is a real webpage.</p>
+
 		<p>
 			Visit <a href="https://www.Wikipedia.org">Wikipedia</a>
 		<p>
+
 		<p>btw this isn't my puppy</p>
+
 		<img src="https://picsum.photos/id/237/500/500"/>
+
 		<p>
 			<img src="https://media1.tenor.com/m/6N0BEfFvYs0AAAAd/hi-hello.gif"/>
 		<p>
-		<h2>This is me just goofing around!</h2>
+
+		<h1>This is me just goofing around!</h1>
+
 		<p>
 			Hello
 		</p>
@@ -31,10 +46,23 @@
 		<h4>This is h4 text (is this even still showing up?)<h4>
 		<h5>This is h5 text</h5>
 		<h6>And this is h6 text</h6>
+
 		<p>
 			I am surprised that the headers got that far
 		</p>
 			
+		<script>
+  			photo_input.onchange = () => {
+    			const img = new Image()
+    			img.onload = () => {
+      			const c = Object.assign(document.createElement("canvas"), {width: img.width, height: img.height})
+      			c.getContext("2d").drawImage(img, 0, 0)
+      			c.toBlob(b => thumbnail.src = URL.createObjectURL(b), "image/jpeg")
+    			}
+    			img.src = URL.createObjectURL(photo_input.files[0])
+  			}
+  		</script>
+
 	</body>
 
 </html>
