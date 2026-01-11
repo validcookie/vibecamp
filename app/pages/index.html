@@ -19,6 +19,12 @@
 			<img id="thumbnail" width="200">
 		</p>
 
+		<p>
+			<button id="upload_btn" disabled>Upload + Analyze</button>
+		</p>
+
+		<pre id="result"></pre>
+
 		<h1><span class="highlight">Hello from my website</span></h1>
 
 		<p class="gray">This is a real webpage.</p>
@@ -55,16 +61,61 @@
 		</p>
 			
 		<script>
-  			photo_input.onchange = () => {
-    			const img = new Image()
-    			img.onload = () => {
-      			const c = Object.assign(document.createElement("canvas"), {width: img.width, height: img.height})
-      			c.getContext("2d").drawImage(img, 0, 0)
-      			c.toBlob(b => thumbnail.src = URL.createObjectURL(b), "image/jpeg")
-    			}
-    			img.src = URL.createObjectURL(photo_input.files[0])
-  			}
-  		</script>
+      let jpegBlob = null;
+
+      photo_input.onchange = () => {
+        result.textContent = "";
+        upload_btn.disabled = true;
+        jpegBlob = null;
+
+        const img = new Image();
+        img.onload = () => {
+          const c = Object.assign(document.createElement("canvas"), {
+            width: img.width,
+            height: img.height
+          });
+          c.getContext("2d").drawImage(img, 0, 0);
+
+          // Convert whatever was selected (HEIC/PNG/etc.) into a JPEG blob.
+          c.toBlob(b => {
+            jpegBlob = b;
+            thumbnail.src = URL.createObjectURL(b);
+            upload_btn.disabled = false;
+          }, "image/jpeg");
+        };
+        img.src = URL.createObjectURL(photo_input.files[0]);
+      };
+
+      upload_btn.onclick = async () => {
+        if (!jpegBlob) {
+          result.textContent = "No JPEG ready yet.";
+          return;
+        }
+
+        result.textContent = "Uploading…";
+
+        const form = new FormData();
+        // Field name must be "file" to match your Flask handler.
+        form.append("file", jpegBlob, "photo.jpg");
+
+        try {
+          const res = await fetch("/upload", {
+            method: "POST",
+            body: form
+          });
+
+          const text = await res.text();
+          if (!res.ok) {
+            result.textContent = "Server error:\n" + text;
+            return;
+          }
+
+          result.textContent = text;
+        } catch (e) {
+          result.textContent = "Network error: " + e;
+        }
+      };
+    </script>
 
 	</body>
 
