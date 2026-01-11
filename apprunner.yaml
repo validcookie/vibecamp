@@ -1,0 +1,21 @@
+version: 1.0
+runtime: python311
+
+build:
+  commands:
+    build:
+      - python3 -m pip install -U pip
+      - python3 -m pip install -r requirements.txt -t python_lib
+
+run:
+  command: python3 app/webserver.py
+  network:
+    port: 8080
+  env:
+    - name: PYTHONPATH
+      value: "/app/python_lib"
+    - name: PORT
+      value: "8080"
+  secrets:
+    - name: OPENAI_API_KEY
+      value-from: "arn:aws:secretsmanager:us-west-2:294574925255:secret:vibecamp-al-openapi-key-IJLD9Y:OPENAI_API_KEY::"
